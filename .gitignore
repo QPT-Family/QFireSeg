@@ -1,0 +1,10 @@
+/.idea/
+/inference_model/
+/result/
+/save_model/
+/test/
+train.txt
+val.txt
+test.txt
+*.pyc
+

@@ -16,3 +16,4 @@ if __name__ == '__main__':
     net = to_static(model,
                     input_spec=[InputSpec(shape=[-1, 3, 608, 608], name='x')])
     paddle.jit.save(net, 'inference_model/PSPnet')
+
