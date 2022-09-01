@@ -1,8 +1,5 @@
-import os
 import numpy as np
 from paddle.vision import transforms as T
-import cv2
-import paddle
 from models import *
 from datasets import *
 from Metric import *
