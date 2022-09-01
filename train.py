@@ -4,7 +4,7 @@ from models import *
 from datasets import *
 from Metric import *
 from utils import *
-
+import time
 
 image_size = (608, 608)
 batch_size = 2
@@ -30,13 +30,11 @@ test_transform = T.Compose([
 train_dataset = MyDataset(mode='train', transform=train_transform, img_size=image_size)
 val_dataset = MyDataset(mode='val', transform=eval_transform, img_size=image_size)
 
-
 # dataloader
 train_loader = paddle.io.DataLoader(dataset=train_dataset, batch_size=batch_size, places=paddle.CUDAPlace(0),
                                     shuffle=True, drop_last=True, num_workers=4)
 val_loader = paddle.io.DataLoader(dataset=val_dataset, batch_size=batch_size, places=paddle.CUDAPlace(0),
                                   shuffle=True, drop_last=True, num_workers=4)
-
 
 # 实例化，网络三选一，默认PSPnet
 model = PSPnet(num_classes)  # PSPNet
@@ -51,7 +49,7 @@ miou = IOUMetric(num_classes=num_classes)
 model_name = 'PSPnet'
 # 模型加载
 load_model(model=model, model_name=model_name)
-epochs = 50
+epochs = 180
 train_loss_list = []
 train_miou_list = []
 val_loss_list = []
@@ -59,13 +57,17 @@ val_miou_list = []
 print('Start Training...')
 
 for epoch in range(1, epochs + 1):
-    print('Epoch/Epochs:{}/{}'.format(epoch, epochs))
+    now = time.localtime()
+    nowt = time.strftime("%Y-%m-%d-%H_%M_%S  ", now)  # 对时间进行格式化
+    print(nowt + 'Epoch/Epochs:{}/{}'.format(epoch, epochs))
 
-    print('Train...')
+    print(nowt + 'Train...')
     train_loss = 0
     train_miou = 0
     model.train()
     for batch_id, (img, label) in enumerate(train_loader):
+        now = time.localtime()
+        nowt = time.strftime("%Y-%m-%d-%H_%M_%S  ", now)  # 对时间进行格式化
         optimizer.clear_grad()
         pred = model(img)
         step_loss = loss(pred, label)
@@ -82,17 +84,18 @@ for epoch in range(1, epochs + 1):
         optimizer.step()
         # 打印信息
         if (batch_id + 1) % 50 == 0:
-            print('Epoch/Epochs:{}/{} Batch/Batchs:{}/{} Step Loss:{} Step Miou:{}'.format(epoch, epochs, batch_id + 1,
-                                                                                           len(train_loader), \
-                                                                                           step_loss.numpy(),
-                                                                                           step_miou))
+            print(nowt + 'Epoch/Epochs:{}/{} Batch/Batchs:{}/{} Step Loss:{} Step Miou:{}'.format(epoch, epochs,
+                                                                                                  batch_id + 1,
+                                                                                                  len(train_loader), \
+                                                                                                  step_loss.numpy(),
+                                                                                                  step_miou))
 
-    print('Train Loss:{} Train Miou:{}'.format(train_loss / len(train_loader), train_miou / len(train_loader)))
+    print(nowt + 'Train Loss:{} Train Miou:{}'.format(train_loss / len(train_loader), train_miou / len(train_loader)))
     train_loss_list.append(train_loss / len(train_loader))
     train_miou_list.append(train_miou / len(train_loader))
 
     if epoch % 5 == 0:
-        print('Val...')
+        print(nowt + 'Val...')
         val_loss = 0
         val_miou = 0
         model.eval()
@@ -109,13 +112,10 @@ for epoch in range(1, epochs + 1):
             step_miou /= mask.shape[0]
             val_miou += step_miou
 
-        print('Val Loss:{} Val Miou:{}'.format(val_loss / len(val_loader), val_miou / len(val_loader)))
+        print(nowt + 'Val Loss:{} Val Miou:{}'.format(val_loss / len(val_loader), val_miou / len(val_loader)))
         val_loss_list.append(val_loss / len(val_loader))
         val_miou_list.append(val_miou / len(val_loader))
 
         save_model(model, model_name + str(epoch))
 
-print('Train Over...')
-
-
-
+print(nowt + 'Train Over...')
