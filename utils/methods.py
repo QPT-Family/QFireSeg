@@ -5,16 +5,16 @@ import os
 # 保存模型参数
 def save_model(model, model_name):
     print('{} model saving...'.format(model_name))
-    paddle.save(model.state_dict(), './save_model/{}.pdparames'.format(model_name))
+    paddle.save(model.state_dict(), './save_model/{}.pdparams'.format(model_name))
 
 
 # 读取模型参数
 def load_model(model, model_name):
-    if os.path.exists('./save_model/{}.pdparames'.format(model_name)) == False:
-        print('No {} model pdparames...'.format(model_name))
+    if os.path.exists('./save_model/{}.pdparams'.format(model_name)) == False:
+        print('No {} model pdparams...'.format(model_name))
     else:
-        model.set_state_dict(paddle.load('./save_model/{}.pdparames'.format(model_name)))
-        print('success loading {} model pdparames'.format(model_name))
+        model.set_state_dict(paddle.load('./save_model/{}.pdparams'.format(model_name)))
+        print('success loading {} model pdparams'.format(model_name))
 
 
 # 保存指标列表
