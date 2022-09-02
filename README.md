@@ -18,7 +18,8 @@ This library can quickly start fire segmentation, accurately and efficiently.
 > 
 > drink a coffee and then you can get a Visualization results like this:
 > 
-> ![infer.png](./static/infer.png)
+> ![infer.png](./static/infer1.png)
+> ![infer.png](./static/infer2.png)
 
 ## How to export inference model and run predict
 
