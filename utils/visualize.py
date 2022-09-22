@@ -5,24 +5,24 @@ import cv2
 import re
 
 
-def visualize(image_name=None, image=None, result=None, is_contrast=True, save_dir=None):
+def visualize(im_path, result, save_dir=None, is_contrast=True):
     """
     Convert predict result to color image, and save added image.
 
     Args:
-        image_name(str): The path of origin image. Default: None.
-        image (np.ndarray): The image data. Default: None.
-        result (np.ndarray): The predict result of image. Default: None.
-        is_contrast (bool): Whether to compare the original image and mask. Default: None.
+        im_path(str): The path of origin image.
+        result (np.ndarray): The predict result of image.
+        is_contrast (bool): Whether to compare the original image and mask. Default: True.
         save_dir (str): The directory for saving visual image. Default: None.
     Returns:
         None
     """
     pattern = re.compile(r'([^<>/\\\|:""\*\?]+)\.\w+$')
-    data = pattern.findall(image_name)
+    data = pattern.findall(im_path)
     name = data[0]
     name = name + '.jpg'
     if is_contrast:
+        image = cv2.imread(im_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_list = [image, result]
     else:
