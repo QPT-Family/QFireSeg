@@ -1,12 +1,4 @@
-import os
-import math
-
 import cv2
-import numpy as np
-from PIL import Image
-import paddle
-
-from models import *
 from utils import *
 from core import infer
 
@@ -23,22 +15,6 @@ def preprocess(im_path, transforms):
     img = cv2.resize(img, image_size)
     img = paddle.to_tensor([transforms(img)])  # NCHW
     return img
-
-    # tsy_mask = get_mask(tsy_img)
-    # visualize(image, tsy_img, tsy_mask, is_contrast=True, save_dir='./result')
-
-
-# 获得预测结果
-def get_mask(img):
-    t = paddle.vision.transforms.Compose([
-        paddle.vision.transforms.Transpose((2, 0, 1)),  # HWC -> CHW
-        paddle.vision.transforms.Normalize(mean=0., std=255.)
-    ])
-    img1 = paddle.to_tensor([t(img)])  # NCHW
-    pred = np.array(model(img1)).squeeze(0)  # CHW
-    pred = pred.argmax(axis=0)
-    return pred
-
 
 def predict(model,
             model_name,
